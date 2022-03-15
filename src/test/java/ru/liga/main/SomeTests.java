@@ -1,8 +1,6 @@
 package ru.liga.main;
 
-import ru.liga.annotation.After;
-import ru.liga.annotation.Before;
-import ru.liga.annotation.Test;
+import ru.liga.annotation.*;
 
 import static ru.liga.main.MyAssertion.*;
 
@@ -16,6 +14,26 @@ public class SomeTests {
     @After
     public void afterAllTests() {
         System.out.println("This is after all tests...");
+    }
+
+    @BeforeEach
+    public void beforeEachTest() {
+        System.out.println("This is before each test 1");
+    }
+
+    @BeforeEach
+    public void beforeEachTestTwo() {
+        System.out.println("This is before each test 2");
+    }
+
+    @AfterEach
+    public void afterEachTest() {
+        System.out.println("This is after each test 1");
+    }
+
+    @AfterEach
+    public void afterEachTestTwo() {
+        System.out.println("This is after each test 2");
     }
 
     @Test

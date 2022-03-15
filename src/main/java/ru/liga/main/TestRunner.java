@@ -1,9 +1,8 @@
 package ru.liga.main;
 
-import ru.liga.annotation.After;
-import ru.liga.annotation.Before;
-import ru.liga.annotation.Test;
+import ru.liga.annotation.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,22 +17,17 @@ public class TestRunner {
             Class<?> classType = loader.loadClass(className);
             Object instance = classType.newInstance();
             Method[] methods = classType.getMethods();
-            List<Method> tests = new ArrayList<>();
-            List<Method> beforeTests = new ArrayList<>();
-            List<Method> afterTests = new ArrayList<>();
-            for (Method method : methods) {
-                if (method.getAnnotation(Test.class) != null) {
-                    tests.add(method);
-                }
-                if (method.getAnnotation(Before.class) != null) {
-                    beforeTests.add(method);
-                }
-                if (method.getAnnotation(After.class) != null) {
-                    afterTests.add(method);
-                }
-            }
+            List<Method> tests = getMethodsForAnnotation(methods, Test.class);
+            List<Method> beforeTests = getMethodsForAnnotation(methods, Before.class);
+            List<Method> beforeEachTest = getMethodsForAnnotation(methods, BeforeEach.class);
+            List<Method> afterTests = getMethodsForAnnotation(methods, After.class);
+            List<Method> afterEachTest = getMethodsForAnnotation(methods, AfterEach.class);
             beforeTests.forEach(m -> runMethod(m, instance));
-            tests.forEach(t -> resultList.add(runTest(t, instance)));
+            tests.forEach(t -> {
+                beforeEachTest.forEach(m -> runMethod(m, instance));
+                resultList.add(runTest(t, instance));
+                afterEachTest.forEach(m -> runMethod(m, instance));
+            });
             afterTests.forEach(m -> runMethod(m, instance));
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,5 +59,15 @@ public class TestRunner {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<Method> getMethodsForAnnotation(Method[] methods, Class<? extends Annotation> annotationClass) {
+        List<Method> listOfMethods = new ArrayList<>();
+        for (Method method : methods) {
+            if (method.getAnnotation(annotationClass) != null) {
+                listOfMethods.add(method);
+            }
+        }
+        return listOfMethods;
     }
 }
