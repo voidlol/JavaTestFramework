@@ -14,9 +14,9 @@ public class App {
     private static void checkTestResults(List<TestResult> testResults) {
         for (TestResult result : testResults) {
             if (result.getTestStatus() == TestStatus.PASSED) {
-                System.out.printf("Test %s is passed!\n", result.getTestedMethod().getName());
+                System.out.printf("Test %s passed!\n", result.getTestedMethod().getName());
             } else {
-                System.err.printf("Test %s is FAILED!\n%s\n", result.getTestedMethod().getName(), result.getTestMethodStackTrace().getMessage());
+                System.err.printf("Test %s FAILED!\n%s\n", result.getTestedMethod().getName(), result.getTestMethodStackTrace().getMessage());
             }
         }
     }
